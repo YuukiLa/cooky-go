@@ -1,0 +1,2 @@
+p, A, /api/v1/tags, GET
+p, B, /api/v1/articles, GET
