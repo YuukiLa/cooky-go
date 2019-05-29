@@ -4,6 +4,7 @@ import (
 	"cooky-go/middleware/cors"
 	"cooky-go/middleware/jwt"
 	"cooky-go/pkg/setting"
+	"cooky-go/routers/sys/dept"
 	"cooky-go/routers/sys/login"
 	"cooky-go/routers/sys/user"
 	"github.com/gin-gonic/gin"
@@ -25,6 +26,6 @@ func InitRouter() *gin.Engine {
 	//r.Use(auth.CasbinHandler(e))
 
 	user.InitUserRouter(r)
+	dept.InitDeptRouter(r)
 	return r
 }
-
