@@ -1,6 +1,10 @@
 package models
 
-import "cooky-go/models"
+import (
+	"cooky-go/models"
+	"github.com/jinzhu/gorm"
+	"time"
+)
 
 type Dept struct {
 	models.Model
@@ -27,4 +31,15 @@ func SelectAllDept() (depts []Dept) {
 func AddDept(dept Dept) bool {
 	models.DB.Create(&dept)
 	return true
+}
+
+func (user *Dept) BeforeCreate(scope *gorm.Scope) error {
+	scope.SetColumn("ct", time.Now())
+	scope.SetColumn("mt", time.Now())
+	return nil
+}
+
+func (user *Dept) BeforeUpdate(scope *gorm.Scope) error {
+	scope.SetColumn("mt", time.Now())
+	return nil
 }
