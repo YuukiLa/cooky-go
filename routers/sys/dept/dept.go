@@ -15,6 +15,7 @@ func InitDeptRouter(r *gin.Engine) {
 	dept.GET("", SelectDept)
 	dept.GET("/tree", SelectDeptTree)
 	dept.POST("", AddDept)
+	dept.PUT("", EditDept)
 }
 
 func SelectDept(ctx *gin.Context) {
@@ -55,5 +56,21 @@ func AddDept(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code": e.SUCCESS,
 		"msg":  "新增部门成功",
+	})
+}
+
+func EditDept(ctx *gin.Context) {
+	var dept models.Dept
+	if err := ctx.ShouldBindJSON(&dept); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": e.ERROR,
+			"msg":  "修改部门失败",
+		})
+	}
+	models.EditDept(dept)
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"code": e.SUCCESS,
+		"msg":  "修改部门成功",
 	})
 }

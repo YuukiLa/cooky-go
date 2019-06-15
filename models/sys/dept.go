@@ -33,13 +33,18 @@ func AddDept(dept Dept) bool {
 	return true
 }
 
-func (user *Dept) BeforeCreate(scope *gorm.Scope) error {
-	scope.SetColumn("ct", time.Now())
-	scope.SetColumn("mt", time.Now())
+func EditDept(dept Dept) bool {
+	models.DB.Model(&Dept{}).Where("dept_id = ?", dept.DeptId).Update(dept)
+	return true
+}
+
+func (dept *Dept) BeforeCreate(scope *gorm.Scope) error {
+	_ = scope.SetColumn("ct", time.Now())
+	_ = scope.SetColumn("mt", time.Now())
 	return nil
 }
 
-func (user *Dept) BeforeUpdate(scope *gorm.Scope) error {
-	scope.SetColumn("mt", time.Now())
+func (dept *Dept) BeforeUpdate(scope *gorm.Scope) error {
+	_ = scope.SetColumn("mt", time.Now())
 	return nil
 }

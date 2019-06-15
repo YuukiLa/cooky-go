@@ -27,13 +27,13 @@ func AddRole(role Role) bool {
 	return true
 }
 
-func (user *Role) BeforeCreate(scope *gorm.Scope) error {
-	scope.SetColumn("ct", time.Now())
-	scope.SetColumn("mt", time.Now())
+func (role *Role) BeforeCreate(scope *gorm.Scope) error {
+	_ = scope.SetColumn("ct", time.Now())
+	_ = scope.SetColumn("mt", time.Now())
 	return nil
 }
 
-func (user *Role) BeforeUpdate(scope *gorm.Scope) error {
-	scope.SetColumn("mt", time.Now())
+func (role *Role) BeforeUpdate(scope *gorm.Scope) error {
+	_ = scope.SetColumn("mt", time.Now())
 	return nil
 }
