@@ -50,6 +50,7 @@ func AddDept(ctx *gin.Context) {
 			"code": e.ERROR,
 			"msg":  "新增部门失败",
 		})
+		return
 	}
 	models.AddDept(dept)
 
@@ -66,6 +67,7 @@ func EditDept(ctx *gin.Context) {
 			"code": e.ERROR,
 			"msg":  "修改部门失败",
 		})
+		return
 	}
 	models.EditDept(dept)
 
