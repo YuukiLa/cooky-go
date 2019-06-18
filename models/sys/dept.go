@@ -34,6 +34,10 @@ func AddDept(dept Dept) bool {
 }
 
 func EditDept(dept Dept) bool {
+	if dept.ParentId == 0 && dept.DeptName == "" {
+		models.DB.Model(&Dept{}).Where("dept_id=?", dept.DeptId).Update("parent_id", dept.ParentId)
+		return true
+	}
 	models.DB.Model(&Dept{}).Where("dept_id = ?", dept.DeptId).Update(dept)
 	return true
 }
