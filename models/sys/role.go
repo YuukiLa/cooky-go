@@ -2,7 +2,9 @@ package models
 
 import (
 	"cooky-go/models"
+	"github.com/Unknwon/com"
 	"github.com/jinzhu/gorm"
+	"strings"
 	"time"
 )
 
@@ -11,6 +13,8 @@ type Role struct {
 	RoleId   int    `gorm:"primary_key" json:"roleId"`
 	RoleName string `json:"roleName"`
 	Remark   string `json:"remark"`
+	MenuIds  []int  `json:"menuIds" gorm:"-"`
+	MenuStr  string `json:"-" gorm:"-"`
 }
 
 func (Role) TableName() string {
@@ -18,7 +22,15 @@ func (Role) TableName() string {
 }
 
 func SelectAllRole() (roles []Role) {
-	models.DB.Find(&roles)
+	models.DB.Raw("SELECT r.*,GROUP_CONCAT(rm.`menu_id`) menu_str FROM t_role r LEFT JOIN t_role_menu rm ON r.`role_id`=rm.`role_id`").Scan(&roles)
+
+	for i := 0; i < len(roles); i++ {
+		ids := strings.Split(roles[i].MenuStr, ",")
+		roles[i].MenuIds = make([]int, len(ids))
+		for j := 0; j < len(ids); j++ {
+			roles[i].MenuIds[j] = com.StrTo(ids[j]).MustInt()
+		}
+	}
 	return
 }
 

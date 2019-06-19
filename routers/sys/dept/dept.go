@@ -5,6 +5,7 @@ import (
 	"cooky-go/pkg/e"
 	"cooky-go/pkg/setting"
 	"cooky-go/pkg/util"
+	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -16,6 +17,7 @@ func InitDeptRouter(r *gin.Engine) {
 	dept.GET("/tree", SelectDeptTree)
 	dept.POST("", AddDept)
 	dept.PUT("", EditDept)
+	dept.DELETE("/:deptId", DeleteDept)
 }
 
 func SelectDept(ctx *gin.Context) {
@@ -74,5 +76,14 @@ func EditDept(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code": e.SUCCESS,
 		"msg":  "修改部门成功",
+	})
+}
+
+func DeleteDept(ctx *gin.Context) {
+	deptId := com.StrTo(ctx.Param("deptId")).MustInt()
+	models.DeleteDept(deptId)
+	ctx.JSON(http.StatusOK, gin.H{
+		"code": e.SUCCESS,
+		"msg":  "删除部门成功",
 	})
 }

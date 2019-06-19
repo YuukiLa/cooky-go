@@ -42,6 +42,11 @@ func EditDept(dept Dept) bool {
 	return true
 }
 
+func DeleteDept(deptId int) {
+	models.DB.Delete(Dept{}, "dept_id=?", deptId)
+	models.DB.Model(&Dept{}).Where("parent_id=?", deptId).Update("parent_id", 0)
+}
+
 func (dept *Dept) BeforeCreate(scope *gorm.Scope) error {
 	_ = scope.SetColumn("ct", time.Now())
 	_ = scope.SetColumn("mt", time.Now())
