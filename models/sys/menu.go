@@ -32,6 +32,11 @@ func SelectAllMenu() (menus []Menu) {
 	return
 }
 
+func SelectMenuByIds(ids []int) (menus []Menu) {
+	models.DB.Where("menu_id IN (?) and url IS NOT NULL", ids).Find(&menus)
+	return
+}
+
 func AddMenu(menu Menu) bool {
 	models.DB.Save(&menu)
 	return true

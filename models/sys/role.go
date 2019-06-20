@@ -22,7 +22,7 @@ func (Role) TableName() string {
 }
 
 func SelectAllRole() (roles []Role) {
-	models.DB.Raw("SELECT r.*,GROUP_CONCAT(rm.`menu_id`) menu_str FROM t_role r LEFT JOIN t_role_menu rm ON r.`role_id`=rm.`role_id`").Scan(&roles)
+	models.DB.Raw("SELECT r.*,GROUP_CONCAT(rm.`menu_id`) menu_str FROM t_role r LEFT JOIN t_role_menu rm ON r.`role_id`=rm.`role_id` GROUP BY r.`role_id`").Scan(&roles)
 
 	for i := 0; i < len(roles); i++ {
 		ids := strings.Split(roles[i].MenuStr, ",")
@@ -35,7 +35,9 @@ func SelectAllRole() (roles []Role) {
 }
 
 func AddRole(role Role) bool {
-	models.DB.Create(&role)
+	menus := SelectMenuByIds(role.MenuIds)
+	//models.DB.Create(&role)
+	AddPolicy(role, menus)
 	return true
 }
 

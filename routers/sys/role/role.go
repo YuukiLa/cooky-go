@@ -25,11 +25,12 @@ func SelectRole(ctx *gin.Context) {
 
 func AddRole(ctx *gin.Context) {
 	var role models.Role
-	if err := ctx.ShouldBindJSON(&role); err != nil {
+	if err := ctx.Bind(&role); err != nil {
 		ctx.JSON(http.StatusOK, gin.H{
 			"code": e.ERROR,
 			"msg":  "新增角色失败",
 		})
+		return
 	}
 	models.AddRole(role)
 
