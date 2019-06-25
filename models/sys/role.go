@@ -36,9 +36,26 @@ func SelectAllRole() (roles []Role) {
 
 func AddRole(role Role) bool {
 	menus := SelectMenuByIds(role.MenuIds)
-	//models.DB.Create(&role)
+	models.DB.Create(&role)
+	AddRoleMenu(role.RoleId, role.MenuIds)
 	AddPolicy(role, menus)
 	return true
+}
+
+func EditRole(role Role) bool {
+	menus := SelectMenuByIds(role.MenuIds)
+	models.DB.Model(&Role{}).Where("role_id=?", role.RoleId).Update(&role)
+	AddRoleMenu(role.RoleId, role.MenuIds)
+	AddPolicy(role, menus)
+	return true
+}
+
+func DeleteRole(roleId int) {
+	var role Role
+	models.DB.Where("role_id = ?", roleId).First(&role)
+	models.DB.Where("role_id=?", role.RoleId).Delete(&Role{})
+	RemoveRole(role)
+	DeleteRoleMenuByRoleId(roleId)
 }
 
 func (role *Role) BeforeCreate(scope *gorm.Scope) error {

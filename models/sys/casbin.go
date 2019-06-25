@@ -24,5 +24,13 @@ func AddPolicy(role Role, menus []Menu) {
 }
 
 func DeleteRolePolycy(role Role) {
+	filteredPolicy := Enforcer.GetFilteredPolicy(0, role.RoleName)
+	for _, policy := range filteredPolicy {
+		Enforcer.RemovePolicy(policy)
+	}
+	Enforcer.DeleteRole(role.RoleName)
+}
+
+func RemoveRole(role Role) {
 	Enforcer.DeleteRole(role.RoleName)
 }
