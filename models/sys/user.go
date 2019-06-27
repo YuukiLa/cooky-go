@@ -2,22 +2,26 @@ package models
 
 import (
 	"cooky-go/models"
+	"github.com/Unknwon/com"
 	"github.com/jinzhu/gorm"
+	"strings"
 	"time"
 )
 
 type User struct {
 	models.Model
-	UserId    int    `gorm:"primary_key" json:"userId"`
-	Username  string `json:"username" binding:"required" `
-	Password  string `json:"password" binding:"required"`
-	DeptId    int    `json:"deptId"`
-	DeptName  string `json:"deptName" gorm:"-"'`
-	Sex       int    `json:"sex"`
-	Email     string `json:"email"`
-	Phone     string `json:"phone"`
-	Described string `json:"described"`
-	Status    int    `json:"status"`
+	UserId   int    `gorm:"primary_key" json:"userId"`
+	Username string `json:"username" binding:"required" `
+	Password string `json:"password" binding:"required"`
+	DeptId   int    `json:"deptId"`
+	DeptName string `json:"deptName" gorm:"-"'`
+	Sex      int    `json:"sex"`
+	Email    string `json:"email"`
+	Phone    string `json:"phone"`
+	Remark   string `json:"remark"`
+	Status   int    `json:"status"`
+	RoleIds  []int  `json:"roleIds" gorm:"-"`
+	RoleStr  string `json:"-" gorm:"-"`
 }
 
 /**
@@ -28,7 +32,14 @@ func (User) TableName() string {
 }
 
 func SelectUser(pageNum int, pageSize int, maps interface{}) (users []User) {
-	models.DB.Where(maps).Offset(pageNum).Limit(pageSize).Find(&users)
+	models.DB.Raw("SELECT u.*,d.`dept_name`,GROUP_CONCAT(ur.`role_id`) role_str FROM t_user u LEFT JOIN t_dept d ON d.`dept_id`=u.`dept_id` LEFT JOIN t_user_role ur ON ur.`user_id`=u.`user_id`").Where(maps).Offset(pageNum).Limit(pageSize).Scan(&users)
+	for i := 0; i < len(users); i++ {
+		ids := strings.Split(users[i].RoleStr, ",")
+		users[i].RoleIds = make([]int, len(ids))
+		for j := 0; j < len(ids); j++ {
+			users[i].RoleIds[j] = com.StrTo(ids[j]).MustInt()
+		}
+	}
 	return
 }
 
