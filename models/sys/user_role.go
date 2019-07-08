@@ -14,7 +14,13 @@ func (UserRole) TableName() string {
 	return "t_user_role"
 }
 
-func FindRoleIdByUserId(userId int) (roles []int) {
-	models.DB.Select("role_id").Where("user_id = ?", userId).Find(&roles)
-	return
+func AddUserRole(userId int, roleIds []int) {
+	DeleteUserRoleByUserId(userId)
+	for _, roleId := range roleIds {
+		models.DB.Create(&UserRole{userId, roleId})
+	}
+}
+
+func DeleteUserRoleByUserId(userId int) {
+	models.DB.Delete(UserRole{}, "user_id=?", userId)
 }

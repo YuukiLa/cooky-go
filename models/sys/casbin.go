@@ -34,3 +34,14 @@ func DeleteRolePolycy(role Role) {
 func RemoveRole(role Role) {
 	Enforcer.DeleteRole(role.RoleName)
 }
+
+func AddRoleToUser(user User, roles []Role) {
+	DeleteUserRole(user)
+	for _, role := range roles {
+		Enforcer.AddRoleForUser(user.Username, role.RoleName)
+	}
+}
+
+func DeleteUserRole(user User) {
+	Enforcer.DeleteRolesForUser(user.Username)
+}

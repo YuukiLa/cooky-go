@@ -32,7 +32,8 @@ func (User) TableName() string {
 }
 
 func SelectUser(pageNum int, pageSize int, maps interface{}) (users []User) {
-	models.DB.Raw("SELECT u.*,d.`dept_name`,GROUP_CONCAT(ur.`role_id`) role_str FROM t_user u LEFT JOIN t_dept d ON d.`dept_id`=u.`dept_id` LEFT JOIN t_user_role ur ON ur.`user_id`=u.`user_id`").Where(maps).Offset(pageNum).Limit(pageSize).Scan(&users)
+
+	models.DB.Debug().Raw("SELECT u.*,d.`dept_name`,GROUP_CONCAT(ur.`role_id`) role_str FROM t_user u LEFT JOIN t_dept d ON d.`dept_id`=u.`dept_id` LEFT JOIN t_user_role ur ON ur.`user_id`=u.`user_id` GROUP BY u.`user_id`").Where(maps).Offset(pageNum * pageSize).Limit(pageSize).Scan(&users)
 	for i := 0; i < len(users); i++ {
 		ids := strings.Split(users[i].RoleStr, ",")
 		users[i].RoleIds = make([]int, len(ids))
@@ -50,7 +51,25 @@ func FindByUsername(username string) (user User) {
 
 func AddUser(user User) bool {
 	models.DB.Create(&user)
+	roles := SelectRoleByRoleIds(user.RoleIds)
+	AddRoleToUser(user, roles)
+	AddUserRole(user.UserId, user.RoleIds)
 	return true
+}
+
+func EditUser(user User) bool {
+	models.DB.Model(&User{}).Where("user_id=?", user.UserId).Update(&user)
+	roles := SelectRoleByRoleIds(user.RoleIds)
+	AddRoleToUser(user, roles)
+	AddUserRole(user.UserId, user.RoleIds)
+	return true
+}
+func DeleteUser(userId int) {
+	var user User
+	models.DB.Where("user_id = ?", userId).First(&user)
+	models.DB.Where("user_id=?", user.UserId).Delete(&User{})
+	DeleteUserRole(user)
+	DeleteUserRoleByUserId(user.UserId)
 }
 
 func GetUserTotal(maps interface{}) (count int) {

@@ -10,16 +10,15 @@ var jwtSecret = []byte(setting.JwtSecret)
 
 type Claims struct {
 	Username string `json:"username"`
-	Roles    []int  `json:"roles"`
+	//Roles    []int  `json:"roles"`
 	jwt.StandardClaims
 }
 
-func GenerateToken(username string, roles []int) (string, error) {
+func GenerateToken(username string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(3 * time.Hour)
 	claims := Claims{
 		username,
-		roles,
 		jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
 			Issuer:    "cooky-go",

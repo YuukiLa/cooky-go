@@ -58,6 +58,11 @@ func DeleteRole(roleId int) {
 	DeleteRoleMenuByRoleId(roleId)
 }
 
+func SelectRoleByRoleIds(roleIds []int) (roles []Role) {
+	models.DB.Where("role_id IN (?)", roleIds).Find(&roles)
+	return
+}
+
 func (role *Role) BeforeCreate(scope *gorm.Scope) error {
 	_ = scope.SetColumn("ct", time.Now())
 	_ = scope.SetColumn("mt", time.Now())
