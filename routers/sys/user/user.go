@@ -19,6 +19,7 @@ func InitUserRouter(r *gin.Engine) {
 		user.GET("", SelectUser)
 		user.PUT("", EditUser)
 		user.DELETE("/:userId", DeleteUser)
+		user.GET("/userInfo", UserInfo)
 	}
 }
 
@@ -90,5 +91,19 @@ func DeleteUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code": e.SUCCESS,
 		"msg":  "删除用户成功",
+	})
+}
+
+func UserInfo(ctx *gin.Context) {
+	user := models.FindByUsername(ctx.MustGet("claims").(*util.Claims).Username)
+	user.Password = "********"
+	menus := models.FindMenusByUserId(user.UserId)
+	result := make(map[string]interface{})
+	result["user"] = user
+	result["menus"] = menus
+	ctx.JSON(http.StatusOK, gin.H{
+		"code": e.SUCCESS,
+		"msg":  "",
+		"data": result,
 	})
 }

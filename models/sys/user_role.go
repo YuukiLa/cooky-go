@@ -24,3 +24,8 @@ func AddUserRole(userId int, roleIds []int) {
 func DeleteUserRoleByUserId(userId int) {
 	models.DB.Delete(UserRole{}, "user_id=?", userId)
 }
+
+func FindRolesByUserId(userId int) (roles []UserRole) {
+	models.DB.Debug().Raw("select role_id from t_user_role where user_id = ?", userId).Scan(&roles)
+	return
+}

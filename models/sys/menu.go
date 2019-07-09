@@ -51,6 +51,11 @@ func EditMenu(menu Menu) bool {
 	return true
 }
 
+func FindMenusByUserId(userId int) (menus []Menu) {
+	models.DB.Debug().Raw("SELECT m.* FROM t_menu m LEFT JOIN t_role_menu rm ON rm.`menu_id`=m.`menu_id` LEFT JOIN t_user_role ur ON ur.`role_id` = rm.`role_id` WHERE ur.`user_id` =?", userId).Scan(&menus)
+	return
+}
+
 func DeleteMenu(menuId int) {
 	models.DB.Delete(Menu{}, "menu_id=?", menuId)
 	models.DB.Model(&Menu{}).Where("parent_id=?", menuId).Update("parent_id", 0)

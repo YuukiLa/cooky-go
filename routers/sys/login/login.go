@@ -12,6 +12,7 @@ import (
 
 func InitLoginRouter(r *gin.Engine) {
 	r.POST("/login", Login)
+
 }
 
 func Login(ctx *gin.Context) {

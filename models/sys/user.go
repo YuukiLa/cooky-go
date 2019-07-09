@@ -33,7 +33,7 @@ func (User) TableName() string {
 
 func SelectUser(pageNum int, pageSize int, maps interface{}) (users []User) {
 
-	models.DB.Debug().Raw("SELECT u.*,d.`dept_name`,GROUP_CONCAT(ur.`role_id`) role_str FROM t_user u LEFT JOIN t_dept d ON d.`dept_id`=u.`dept_id` LEFT JOIN t_user_role ur ON ur.`user_id`=u.`user_id` GROUP BY u.`user_id`").Where(maps).Offset(pageNum * pageSize).Limit(pageSize).Scan(&users)
+	models.DB.Raw("SELECT u.*,d.`dept_name`,GROUP_CONCAT(ur.`role_id`) role_str FROM t_user u LEFT JOIN t_dept d ON d.`dept_id`=u.`dept_id` LEFT JOIN t_user_role ur ON ur.`user_id`=u.`user_id` GROUP BY u.`user_id`").Where(maps).Offset(pageNum * pageSize).Limit(pageSize).Scan(&users)
 	for i := 0; i < len(users); i++ {
 		ids := strings.Split(users[i].RoleStr, ",")
 		users[i].RoleIds = make([]int, len(ids))

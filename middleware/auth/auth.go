@@ -16,6 +16,10 @@ func CasbinHandler(e *casbin.Enforcer) gin.HandlerFunc {
 		obj := c.Request.URL.RequestURI()
 		//获取请求方法
 		act := c.Request.Method
+		if obj == "/user/userInfo" {
+			c.Next()
+			return
+		}
 		//根据上下文获取载荷claims 从claims获得role
 		claims := c.MustGet("claims").(*util.Claims)
 		userName := claims.Username

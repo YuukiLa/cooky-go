@@ -8,12 +8,12 @@ import (
 
 var Enforcer *casbin.Enforcer
 
-func Init() {
+func Init() *casbin.Enforcer {
 
 	a := gormadapter.NewAdapterByDB(models.DB)
 	Enforcer = casbin.NewEnforcer("conf/authz_model.conf", a)
 
-	return
+	return Enforcer
 }
 
 func AddPolicy(role Role, menus []Menu) {
@@ -28,7 +28,7 @@ func DeleteRolePolycy(role Role) {
 	for _, policy := range filteredPolicy {
 		Enforcer.RemovePolicy(policy)
 	}
-	Enforcer.DeleteRole(role.RoleName)
+	//Enforcer.DeleteRole(role.RoleName)
 }
 
 func RemoveRole(role Role) {

@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"cooky-go/middleware/auth"
 	"cooky-go/middleware/cors"
 	"cooky-go/middleware/jwt"
 	models "cooky-go/models/sys"
@@ -25,9 +26,10 @@ func InitRouter() *gin.Engine {
 	r.Use(jwt.JWT())
 	//配置casbin权限校验中间件
 	//a := gormadapter.NewAdapterByDB(models.DB)
-	//e := casbin.NewEnforcer("conf/authz_model.conf", a)
-	//r.Use(auth.CasbinHandler(e))
-	models.Init()
+
+	e := models.Init()
+	r.Use(auth.CasbinHandler(e))
+
 	user.InitUserRouter(r)
 	dept.InitDeptRouter(r)
 	role.InitRoleRouter(r)
