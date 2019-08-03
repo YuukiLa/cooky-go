@@ -3,8 +3,6 @@ package dept
 import (
 	models "cooky-go/models/sys"
 	"cooky-go/pkg/e"
-	"cooky-go/pkg/setting"
-	"cooky-go/pkg/util"
 	"github.com/Unknwon/com"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -14,28 +12,12 @@ func InitDeptRouter(r *gin.Engine) {
 	dept := r.Group("/dept")
 
 	dept.GET("", SelectDept)
-	dept.GET("/tree", SelectDeptTree)
 	dept.POST("", AddDept)
 	dept.PUT("", EditDept)
 	dept.DELETE("/:deptId", DeleteDept)
 }
 
 func SelectDept(ctx *gin.Context) {
-	pid := ctx.DefaultQuery("pid", "0")
-	maps := make(map[string]interface{})
-	result := make(map[string]interface{})
-	maps["parent_id"] = pid
-
-	depts := models.SelectDept(util.GetPage(ctx), setting.PageSize, maps)
-	result["data"] = depts
-
-	ctx.JSON(http.StatusOK, gin.H{
-		"code": e.SUCCESS,
-		"data": result,
-	})
-}
-
-func SelectDeptTree(ctx *gin.Context) {
 	depts := models.SelectAllDept()
 	result := make(map[string]interface{})
 	result["data"] = depts

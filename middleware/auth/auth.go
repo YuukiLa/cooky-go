@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/casbin/casbin"
 	"github.com/gin-gonic/gin"
+	"strings"
 )
 
 //拦截器
@@ -13,7 +14,7 @@ func CasbinHandler(e *casbin.Enforcer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		//获取请求的URI
-		obj := c.Request.URL.RequestURI()
+		obj := strings.Split(c.Request.URL.RequestURI(), "?")[0]
 		//获取请求方法
 		act := c.Request.Method
 		if obj == "/user/userInfo" {

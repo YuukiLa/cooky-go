@@ -33,7 +33,7 @@ func SelectAllMenu() (menus []Menu) {
 }
 
 func SelectMenuByIds(ids []int) (menus []Menu) {
-	models.DB.Where("menu_id IN (?) and url IS NOT NULL", ids).Find(&menus)
+	models.DB.Where("menu_id IN (?) and url != ''", ids).Find(&menus)
 	return
 }
 
